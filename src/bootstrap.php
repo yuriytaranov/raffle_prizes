@@ -12,24 +12,34 @@ spl_autoload_register(function($name){
 });
 
 /**
+ * Forces read config from the _ENV array.
+ * @param string $name
+ * @param $default
+ * @return bool|mixed
+ */
+function confenv(string $name, $default = null) {
+    return getenv($name);
+}
+
+/**
  * Read configuration file. Gives config value.
- * @param string $section Configuration section
+ * @param string $section Configuration section. If section name is ENV then it gets an _ENV element.
  * @param string $name Parameter name.
  * @param mixed $default Default value is it isn't in config file.
  * 
  * @return mixed Configuration parameter.
  */
-function conf($section, $name, $default = null)
+function conf(string $section, string $name, $default = null)
 {
     static $conf = [];
-    if(empty($conf)) {
+    if (empty($conf)) {
         $configFiles = glob(__DIR__ . "/conf/*.ini");
-        array_walk($configFiles, function($file) use (&$conf) {
+        array_walk($configFiles, function ($file) use (&$conf) {
             $pieceOfConf = parse_ini_file($file, true, INI_SCANNER_TYPED);
             $conf = array_merge($conf, $pieceOfConf);
         });
     }
-    return (isset($conf[$section][$name])) ? $conf[$section][$name] : $default;
+    return $conf[$section][$name] ?? $default;
 }
 
 /**

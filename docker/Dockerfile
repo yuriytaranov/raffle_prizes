@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y \
     jpegoptim optipng pngquant gifsicle \
     git \
     curl \
+    libpq-dev \
     wget
 
 RUN docker-php-ext-configure zip
@@ -26,15 +27,20 @@ RUN docker-php-ext-install \
         pcntl \
         intl \
         zip \
+        pgsql \
+        pdo_pgsql \
         opcache
 
+RUN docker-php-ext-enable pgsql pdo_pgsql
 # apcu for caching, xdebug for debugging and also phpunit coverage
 RUN pecl install xdebug && docker-php-ext-enable xdebug
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
+COPY ./docker/php/conf.d/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+WORKDIR /var/www
 # Copy and run composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
-RUN composer install --no-interaction
 
 CMD ["php-fpm"]

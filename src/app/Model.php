@@ -64,7 +64,7 @@ class Model {
     public function one($field, $value)
     {
         $result = Database()->query("select * from `{$this->table}` where `{$field}` = :value", [':value' => $value])->fetchAll();
-        array_walk($this->_fileds, function($field){
+        array_walk($this->_fileds, function($field) use($result){
             $this->_values[$field] = $result[$field];
         });
     }

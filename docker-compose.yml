@@ -10,7 +10,7 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: postgresql://dbuser:bigsecret@127.0.0.1:5432/devdb
+      DATABASE_URL: pgsql:host=db;port=5432;dbname=devdb;user=devuser;password=devsecret
     working_dir: /var/www
     volumes:
       - ./src:/var/www
