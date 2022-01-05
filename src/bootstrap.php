@@ -62,7 +62,7 @@ function Database()
  * 
  * @return mixed Application handler.
  */
-function app($name = null)
+function app(string $name = null)
 {
     static $h = null;
     if(is_null($h)){

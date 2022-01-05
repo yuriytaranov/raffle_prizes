@@ -35,10 +35,13 @@ class Response {
 
     /**
      * Set the response result.
+     * @param $result
+     * @return Response
      */
-    public function set($result)
+    public function set($result): Response
     {
         $this->_result = $result;
+        return $this;
     }
 
     /**

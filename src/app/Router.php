@@ -24,8 +24,8 @@ class Router {
 
     /**
      * Router handler
-     * 
-     * @return app\http\Reponse The answer.
+     *
+     * @return Response The answer.
      */
     public function handle(): Response
     {

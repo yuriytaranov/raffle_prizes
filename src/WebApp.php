@@ -30,7 +30,7 @@ class WebApp{
     /**
      * Tells to the router to handle a request.
      * 
-     * @return string processed request answer.
+     * @return app\http\Reponse|Response processed request answer.
      */
     public function handle()
     {
