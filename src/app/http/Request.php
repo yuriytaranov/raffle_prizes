@@ -4,6 +4,10 @@ namespace app\http;
 
 class Request {
     /**
+     * @var array Session parameters.
+     */
+    private $_session = null;
+    /**
      * @var string Server hostname.
      */
     private $_host = null;
@@ -31,6 +35,10 @@ class Request {
      * @var array Url parsed arguments.
      */
     private $_args = [];
+    /**
+     * @var bool If request is post then true.
+     */
+    public $isPost = false;
 
     /**
      * Fill the args property with a path values.
@@ -71,6 +79,7 @@ class Request {
         $this->_path = $this->cleanPath($_SERVER['REQUEST_URI']);
         $this->_get = $_GET;
         $this->_post = $_POST;
+        $this->_session = $_SESSION;
         $this->parseArguments($this->_path);
         if (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1) || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
             $this->_scheme = 'https';
@@ -78,6 +87,7 @@ class Request {
         else {
             $this->_scheme = 'http';
         }
+        $this->isPost = $_SERVER['REQUEST_METHOD'] === 'POST';
     }
 
     /**
@@ -99,8 +109,39 @@ class Request {
      * 
      * @return mixed A value.
      */
-    public function arg($index, $default = null)
+    public function arg(int $index, $default = null)
     {
-        return isset($this->_args[$index]) ? $this->_args[$index] : $default;
+        return $this->_args[$index] ?? $default;
+    }
+
+    /**
+     * Gets the post argument.
+     * @param $name
+     * @param $default
+     * @return mixed|null
+     */
+    public function post($name, $default) {
+        return $this->_post[$name] ?? $default;
+    }
+
+    /**
+     * Gets the session argument
+     * @param $name
+     * @param $default
+     * @return mixed
+     */
+    public function session($name, $default) {
+        return $this->_session[$name] ?? $default;
+    }
+
+    /**
+     * Sets session value
+     * @param $name
+     * @param $value
+     * @return void
+     */
+    public function sessionSet($name, $value) {
+        $this->_session[$name] = $value;
+        $_SESSION[$name] = $value;
     }
 }

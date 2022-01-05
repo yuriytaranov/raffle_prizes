@@ -7,7 +7,6 @@ use app\http\Response;
  * Main class for entire web application.
  */
 class WebApp{
-
     /**
      * The router.
      */
@@ -25,6 +24,7 @@ class WebApp{
     {
         $this->_router = new Router();
         $this->response = new Response();
+        session_start();
     }
 
     /**
@@ -34,6 +34,7 @@ class WebApp{
      */
     public function handle()
     {
+        $this->_router->app = $this;
         return $this->_router->handle();
     }
 }

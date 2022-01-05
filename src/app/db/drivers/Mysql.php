@@ -2,6 +2,7 @@
 
 namespace app\db\drivers;
 use PDO;
+use PDOStatement;
 use WebApp;
 
 class Mysql {
@@ -15,14 +16,10 @@ class Mysql {
      */
     public function __construct() 
     {
-        $host = conf('Database', 'host', 'localhost');
-        $port = conf('Database', 'port', 3306);
-        $user = conf('Database', 'user', 'root');
-        $password = conf('Database', 'password', );
-        $driver = strtolower(conf('Database', 'driver', 'mysql'));
-        $database = conf('Database', 'name', 'hello');
-        $dsn = "{$driver}:host={$host};dbname={$database}";
-        $this->_connection = new PDO($dsn, $user, $password);
+        $dsn = confenv("DATABASE_URL");
+        $user = confenv('DATABASE_USER');
+        $password = confenv('DATABASE_PASSWORD');
+        $this->_connection = new \PDO($dsn, $user, $password);
     }
 
     /**
@@ -32,7 +29,7 @@ class Mysql {
      * 
      * @return PDOStatement Statement containing query result.
      */
-    public function query($sql, $fields = [])
+    public function query(string $sql, array $fields = [])
     {
         $stmt = $this->_connection->prepare($sql);
         $stmt->execute($fields);
@@ -62,5 +59,14 @@ class Mysql {
     {
         $stmt = $this->_connection->prepare($sql);
         $stmt->execute($fields);
+    }
+
+    /**
+     * Executes an unprepared query.
+     * @param string $sql
+     * @return false|int
+     */
+    public function exec(string $sql) {
+        return $this->_connection->exec($sql);
     }
 }

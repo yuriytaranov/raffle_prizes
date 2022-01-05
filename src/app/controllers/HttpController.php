@@ -8,6 +8,9 @@ use app\http\Response;
 use WebApp;
 
 abstract class HttpController extends Controller {
+    /** @var WebApp $app */
+    protected $app = null;
+
     /**
      * Render view and return response.
      * @param string $view

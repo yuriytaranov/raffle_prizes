@@ -45,13 +45,13 @@ function conf(string $section, string $name, $default = null)
 /**
  * Application access to the database.
  * 
- * @return \app\db\drivers\Postgres|null Configured database connection.
+ * @return \app\db\drivers\Mysql|null Configured database connection.
  */
 function Database()
 {
     static $db = null;
     if(is_null($db)) {
-        $db = new \app\db\drivers\Postgres();
+        $db = new \app\db\drivers\Mysql();
     }
     return $db;
 }

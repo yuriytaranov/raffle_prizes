@@ -3,12 +3,13 @@
 namespace app;
 use Exception;
 class Model {
+    public $table;
     protected $_fields = [];
     protected $_values = [];
 
     protected function describe()
     {
-        $fields = Database()->query("describe `{$this->table}`")->fetchAll();
+        $fields = Database()->query("describe `{$this->table}`")->fetchAll(\PDO::FETCH_ASSOC);
         array_map(function($row){
             $this->_fields[$row['Field']] = $row['Field'];
             $this->_values[$row['Field']] = null;
@@ -18,7 +19,7 @@ class Model {
     public function __get($name)
     {
         if(isset($this->_fields[$name])) {
-            return $this->_fields[$name];
+            return $this->_values[$name];
         }
         throw new Exception("Field {$name} not found in model");
     }
@@ -63,15 +64,17 @@ class Model {
 
     public function one($field, $value)
     {
-        $result = Database()->query("select * from `{$this->table}` where `{$field}` = :value", [':value' => $value])->fetchAll();
-        array_walk($this->_fileds, function($field) use($result){
-            $this->_values[$field] = $result[$field];
-        });
+        $result = Database()->query("select * from `{$this->table}` where `{$field}` = :value", [':value' => $value])->fetch(\PDO::FETCH_ASSOC);
+        if($result !== false) {
+            array_walk($this->_fields, function ($field) use ($result) {
+                $this->_values[$field] = $result[$field];
+            });
+        }
     }
 
     public function list()
     {
-        $result = Database()->query("select * from `{$this->table}`")->fetchAll();
+        $result = Database()->query("select * from `{$this->table}`")->fetchAll(\PDO::FETCH_ASSOC);
         $models = array_map(function($row){
             return new static($row);
         }, $result);
@@ -86,5 +89,9 @@ class Model {
                 $this->_values[$field] = $load[$field];
             });
         }
+    }
+
+    public function query(string $sql, array $args) {
+        return Database()->query($sql, $args);
     }
 }

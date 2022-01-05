@@ -12,6 +12,8 @@ class WebRoute {
         return [
             '/^$/' => ['app\controllers\IndexController' => 'index'],
             '/^login$/' => ['app\controllers\IndexController' => 'login'],
+            '/^authenticate/' => ['app\controllers\IndexController' => 'authenticate'],
+            '/^register/' => ['app\controllers\IndexController' => 'register'],
             '/^dashboard/' => ['app\controllers\IndexController' => 'dashboard'],
         ];
     }

@@ -8,14 +8,18 @@ use app\http\Request;
  */
 abstract class Controller {
     /**
-     * @var app\Request The user request.
+     * @var array current app instance.
+     */
+    protected $app = null;
+    /**
+     * @var Request The user request.
      */
     protected $_request = null;
 
     /**
      * Creates a response.
      */
-    public function __construct($request)
+    public function __construct(Request $request)
     {
         $this->_request = $request;
     }

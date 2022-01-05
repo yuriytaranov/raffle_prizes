@@ -27,11 +27,11 @@ RUN docker-php-ext-install \
         pcntl \
         intl \
         zip \
-        pgsql \
-        pdo_pgsql \
+        mysqli \
+        pdo_mysql \
         opcache
 
-RUN docker-php-ext-enable pgsql pdo_pgsql
+RUN docker-php-ext-enable mysqli pdo_mysql
 # apcu for caching, xdebug for debugging and also phpunit coverage
 RUN pecl install xdebug && docker-php-ext-enable xdebug
 

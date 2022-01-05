@@ -4,11 +4,12 @@ namespace app\controllers;
 use app\Controller;
 use app\http\Response;
 use app\models\ListModel;
+use app\models\UserModel;
 
 class ListController extends Controller {
     public function list(): Response
     {
-        $model = new ListModel();
+        $model = new UserModel();
         $list = $model->list();
         app()->response->json->success($list);
         return app()->response; 

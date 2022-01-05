@@ -9,21 +9,9 @@ class MigrationCommand extends Command {
      */
     private function storage()
     {
-        $result = Database()->query("
-            SELECT table_name FROM information_schema.tables
-            WHERE table_schema='public' AND table_name=:migrations
-        ", ["migrations" => 'migrations'])->fetchObject();
+        $result = Database()->query("show tables like 'migrations'")->fetchAll();
         if(empty($result)) {
-            Database()->update("
-                create table migrations
-                (
-                    id      serial
-                        constraint migrations_pk
-                            primary key,
-                    name    varchar not null,
-                    created timestamp default now()
-                )
-            ");
+            Database()->update("create table migrations(id int auto_increment, name varchar(80) not null, created datetime default now(), primary key(id))");
         }
     }
 
@@ -36,11 +24,11 @@ class MigrationCommand extends Command {
         $migrations = glob(__DIR__ . "/../db/migrations/*.sql");
         array_walk($migrations, function($migration){
             $name = basename($migration);
-            $result = Database()->query("select name from migrations where name = :name", [':name' => $name])->fetchAll();
+            $result = Database()->query("select `name` from `migrations` where `name` = :name", [':name' => $name])->fetchAll();
             if(empty($result)) {
                 $sql = file_get_contents($migration);
                 Database()->exec($sql);
-                $id = Database()->insert("insert into migrations(name) values(:name)", [
+                $id = Database()->insert("insert into `migrations`(`name`) values(:name)", [
                     'name' => $name,
                 ]);
                 $this->writeln("Migration {$name} applied, id = {$id}");

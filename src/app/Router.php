@@ -2,8 +2,11 @@
 namespace app;
 use app\http\Request;
 use app\http\Response;
+use WebApp;
 
 class Router {
+    /** @var WebApp */
+    public $app = null;
     /**
      * Array of router files.
      */
