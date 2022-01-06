@@ -37,6 +37,7 @@ class IndexController extends HttpController
             $user->one('email', $email);
             if(!is_null($user->email) && password_verify($password, $user->password) && $user->active === 1) {
                 $r->sessionSet("is_logged", true);
+                $r->sessionSet("user_id", $user->id);
                 return $this->redirect('dashboard');
             }
             return $this->view('auth/login', ['req' => $r, 'error' => '']);
@@ -75,5 +76,14 @@ class IndexController extends HttpController
             $this->redirect('login');
         }
         return $this->view("auth/register", ['req' => $r, 'error' => '']);
+    }
+
+    public function getPrize() {
+        $r = $this->_request;
+        if($r->session("is_logged", false) === true) {
+
+            return $this->view("my/dashboard", []);
+        }
+        return $this->redirect("login");
     }
 }
